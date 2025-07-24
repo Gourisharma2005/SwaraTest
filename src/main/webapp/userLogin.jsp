@@ -10,7 +10,7 @@
         <h2>User Login</h2>
         <p>Please enter your credentials</p>
         <form action="userLogin" method="post">
-            <input type="text" name="username" placeholder="Enter Username" required><br>
+            <input type="text" name="username" placeholder="Enter Email Id" required><br>
             <input type="password" name="password" placeholder="Enter Password" required><br>
             <button type="submit">Login</button>
         </form>
