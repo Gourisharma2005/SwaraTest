@@ -1,0 +1,41 @@
+<web-app xmlns="http://xmlns.jcp.org/xml/ns/javaee"
+         version="3.1"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee
+         http://xmlns.jcp.org/xml/ns/javaee/web-app_3_1.xsd">
+
+
+<servlet>
+    <servlet-name>UserLoginServlet</servlet-name>
+    <servlet-class>com.swara.UserLoginServlet</servlet-class>
+  </servlet>
+
+  <servlet-mapping>
+    <servlet-name>UserLoginServlet</servlet-name>
+    <url-pattern>/userLogin</url-pattern>
+  </servlet-mapping>
+
+  <servlet>
+    <servlet-name>AdminLogin</servlet-name>
+    <servlet-class>com.swara.AdminLoginServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>AdminLogin</servlet-name>
+    <url-pattern>/adminLogin</url-pattern>
+  </servlet-mapping>
+
+  <servlet>
+    <servlet-name>SubmitComplaint</servlet-name>
+    <servlet-class>com.swara.SubmitComplaintServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>SubmitComplaint</servlet-name>
+    <url-pattern>/submitComplaint</url-pattern>
+  </servlet-mapping>
+
+
+  <welcome-file-list>
+    <welcome-file>index.html</welcome-file>
+    <welcome-file>index.jsp</welcome-file>
+  </welcome-file-list>
+</web-app>

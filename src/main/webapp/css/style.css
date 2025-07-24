@@ -1,0 +1,91 @@
+/* Base Reset */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* Body */
+body {
+    font-family: 'Segoe UI', sans-serif;
+    background: linear-gradient(120deg, #fce4ec, #f8bbd0);
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* Login Card Container */
+.login-container {
+    background: #ffffff;
+    padding: 40px 30px;
+    border-radius: 16px;
+    box-shadow: 0px 8px 20px rgba(0, 0, 0, 0.1);
+    width: 350px;
+    text-align: center;
+}
+
+/* Heading */
+.login-container h2 {
+    margin-bottom: 10px;
+    color: #e91e63;
+}
+
+/* Subtext */
+.login-container p {
+    margin-bottom: 25px;
+    color: #757575;
+}
+
+/* Input Fields & Dropdown */
+input[type="text"],
+input[type="password"],
+select {
+    width: 100%;
+    padding: 12px;
+    margin: 10px 0;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    font-size: 14px;
+    outline: none;
+    transition: border 0.3s;
+}
+
+input:focus,
+select:focus {
+    border-color: #e91e63;
+}
+
+/* Buttons */
+button {
+    width: 100%;
+    padding: 12px;
+    background-color: #e91e63;
+    color: white;
+    font-size: 16px;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    margin-top: 15px;
+}
+
+button:hover {
+    background-color: #d81b60;
+}
+
+/* Button Group on index.html */
+.button-group {
+    display: flex;
+    gap: 20px;
+    justify-content: center;
+    margin-top: 20px;
+}
+
+/* Responsive */
+@media screen and (max-width: 400px) {
+    .login-container {
+        width: 90%;
+        padding: 25px;
+    }
+}
