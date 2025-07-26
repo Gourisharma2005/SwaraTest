@@ -32,4 +32,22 @@ public class UserDAO {
         }
         return null;
     }
+
+    public boolean registerUser(String username, String password, String uniqueId, String email, String phone) {
+        try (Connection conn = DBConnection.getConnection()) {
+            String query = "INSERT INTO users (username, password, unique_id, email, phone) VALUES (?, ?, ?, ?, ?)";
+            PreparedStatement ps = conn.prepareStatement(query);
+            ps.setString(1, username);
+            ps.setString(2, password);
+            ps.setString(3, uniqueId);
+            ps.setString(4, email);
+            ps.setString(5, phone);
+            int rows = ps.executeUpdate();
+            return rows > 0;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
 }

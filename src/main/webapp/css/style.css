@@ -37,9 +37,11 @@ body {
     color: #757575;
 }
 
-/* Input Fields & Dropdown */
+/* Input Fields: now includes all input types */
 input[type="text"],
 input[type="password"],
+input[type="email"],
+input[type="tel"],
 select {
     width: 100%;
     padding: 12px;
