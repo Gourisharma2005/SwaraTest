@@ -92,7 +92,7 @@
       </section>
     </main>
   </div>
-  <button class="register-complaint-btn">➕ Register Complaint</button>
+  <button class="register-complaint-btn">➕Register Complaint</button>
 
 </body>
 </html>
