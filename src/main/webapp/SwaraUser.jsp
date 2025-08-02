@@ -1,3 +1,7 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ page import="java.util.List" %>
+<%@ page import="com.swara.model.User" %>
+<%@ page import="com.swara.model.Complaint" %>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -11,7 +15,7 @@
     <div class="logo">Swara - User Portal</div>
     <div class="profile">
       <img src="https://via.placeholder.com/40" alt="User Profile" />
-      <span>Hello, Priya</span>
+      <span>Hello, <%= session.getAttribute("user") != null ? ((User) session.getAttribute("user")).getUsername() : "Guest" %></span>
     </div>
   </header>
 
@@ -19,80 +23,57 @@
     <!-- Sidebar -->
     <aside class="sidebar">
       <ul class="menu">
+        <li class="section-title">📥 My Complaints</li>
+        <li class="section-title">📍 Track Status</li>
+        <li class="section-title">📋 file a case</li>
+        <li class="section-title">💬 Chat</li>
 
-
-          <ul class="menu">
-            <li class="section-title">📥 My Complaints</li>
-            <li class="section-title">📍 Track Status</li>
-            <li class="section-title">📋 file a case</li>
-            <li class="section-title">💬 Chat</li>
-
-            <div class="filters">
-                <h3>🔎 Filter Complaints</h3>
-                <input type="text" placeholder="Search..."/>
-                <select>
-                  <option>Status</option>
-                  <option>Pending</option>
-                  <option>Resolved</option>
-                </select>
-                <input type="date" />
-              </div>
-              <li class="section-title">⚙️ Settings</li>
-              <li class="section-title">Logout</li>
+        <div class="filters">
+          <h3>🔎 Filter Complaints</h3>
+          <input type="text" placeholder="Search..." onkeyup="filterTable(this.value)"/>
+          <select onchange="filterTable(document.querySelector('.filters input').value, this.value)">
+            <option value="">Status</option>
+            <option value="Pending">Pending</option>
+            <option value="Resolved">Resolved</option>
+          </select>
+          <input type="date" onchange="filterTable(document.querySelector('.filters input').value, document.querySelector('.filters select').value, this.value)" />
+        </div>
+        <li class="section-title">⚙️ Settings</li>
+        <li class="section-title"><a href="logout">Logout</a></li>
       </ul>
     </aside>
-
-
 
     <!-- Main Content -->
     <main class="dashboard">
       <h1>Welcome to Your Safe Space 💖</h1>
 
+      <!-- Display anonymous_id -->
+      <section>
+        <h2>Your Anonymous ID</h2>
+        <p><%= session.getAttribute("anonymous_id") != null ? session.getAttribute("anonymous_id") : "Not available" %></p>
+      </section>
+
       <section class="stats">
         <div class="card">
-          <h2>3</h2>
+          <h2><%= session.getAttribute("activeComplaints") != null ? session.getAttribute("activeComplaints") : "0" %></h2>
           <p>Active Complaints</p>
         </div>
         <div class="card">
-          <h2>1</h2>
+          <h2><%= session.getAttribute("resolvedComplaints") != null ? session.getAttribute("resolvedComplaints") : "0" %></h2>
           <p>Resolved</p>
         </div>
         <div class="card">
-          <h2>0</h2>
+          <h2><%= session.getAttribute("escalatedComplaints") != null ? session.getAttribute("escalatedComplaints") : "0" %></h2>
           <p>Escalated</p>
         </div>
       </section>
 
-      <section class="complaint-history">
-        <h2>📋 My Complaint</h2>
-        <table>
-          <thead>
-            <tr>
-              <th>ID</th>
-              <th>Subject</th>
-              <th>Status</th>
-              <th>Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td>#C101</td>
-              <td>Harassment in Lab</td>
-              <td><span class="status pending">Pending</span></td>
-              <td><button>View</button></td>
-            </tr>
-            <tr>
-              <td>#C098</td>
-              <td>Comments in Corridor</td>
-              <td><span class="status resolved">Resolved</span></td>
-              <td><button>Download</button></td>
-            </tr>
-          </tbody>
-        </table>
-      </section>
+      
     </main>
   </div>
-  <button class="register-complaint-btn">➕Register Complaint</button>
+
+  <button class="register-complaint-btn" onclick="window.location.href='complaintForm.jsp'">➕ Register Complaint</button>
+<script src="js/userDashboard.js"></script>
 
 </body>
 </html>

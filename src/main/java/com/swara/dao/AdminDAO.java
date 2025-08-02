@@ -3,21 +3,29 @@ package com.swara.dao;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+
+import com.swara.model.Admin;
 import com.swara.util.DBConnection;
 
 public class AdminDAO {
-    public boolean validate(String username, String password, String role) {
+    public Admin getAdminByUsername(String username) {
         try (Connection conn = DBConnection.getConnection()) {
-            String query = "SELECT * FROM admins WHERE username = ? AND password = ? AND role = ?";
+            String query = "SELECT * FROM admins WHERE username = ?";
             PreparedStatement ps = conn.prepareStatement(query);
             ps.setString(1, username);
-            ps.setString(2, password);
-            ps.setString(3, role);
             ResultSet rs = ps.executeQuery();
-            return rs.next();
+            if (rs.next()) {
+                Admin admin = new Admin();
+                admin.setUsername(rs.getString("username"));
+                admin.setPassword(rs.getString("password"));
+                admin.setRole(rs.getString("role"));
+                return admin;
+            }
         } catch (Exception e) {
             e.printStackTrace();
-            return false;
         }
+        return null;
     }
+
+
 }

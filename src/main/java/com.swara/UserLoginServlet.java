@@ -1,28 +1,33 @@
 package com.swara;
 
 import com.swara.dao.UserDAO;
+import com.swara.model.User;
+import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 
 import java.io.IOException;
 
 public class UserLoginServlet extends HttpServlet {
-    protected void doPost(HttpServletRequest req, HttpServletResponse res) throws IOException {
-        String username = req.getParameter("username");
-        String password = req.getParameter("password");
+    protected void doPost(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
 
-        System.out.println("Received username: " + username);
-        System.out.println("Received password: " + password); // Don't do this in production, just for debugging
+        String email = request.getParameter("email");
+        String password = request.getParameter("password");
 
-        UserDAO dao = new UserDAO();
-        if (dao.validate(username, password)) {
-            String uniqueId = dao.getUniqueId(username);
-            req.getSession().setAttribute("uniqueId", uniqueId);
-            res.sendRedirect("complaintForm.jsp");
+        UserDAO userDAO = new UserDAO();
+        User user = userDAO.getUserByEmail(email);
+
+        if (user != null && user.getPassword().equals(password)) {
+            HttpSession session = request.getSession();
+            session.setAttribute("user", user);
+            session.setAttribute("unique_id", user.getUniqueId());
+            response.sendRedirect("SwaraUser.jsp");
         } else {
-            res.getWriter().println("Invalid user credentials");
+            request.setAttribute("error", "Invalid credentials!");
+            request.getRequestDispatcher("userLogin.jsp").forward(request, response);
         }
     }
-
 }

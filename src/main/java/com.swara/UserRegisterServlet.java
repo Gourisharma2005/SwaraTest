@@ -1,30 +1,35 @@
 package com.swara;
 
 import com.swara.dao.UserDAO;
-import jakarta.servlet.http.*;
-import jakarta.servlet.annotation.WebServlet;
 import java.io.IOException;
 
+import com.swara.model.User;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.HttpServlet;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+
+import java.util.UUID;
 
 public class UserRegisterServlet extends HttpServlet {
-    protected void doPost(HttpServletRequest req, HttpServletResponse res) throws IOException {
-        String username = req.getParameter("username");
-        String password = req.getParameter("password");
-        String email = req.getParameter("email");
-        String phone = req.getParameter("phone");
+    protected void doPost(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        String username = request.getParameter("username");
+        String password = request.getParameter("password");
+        String email = request.getParameter("email");
+        String phone = request.getParameter("phone");
 
-        // Generate unique ID (simple logic — change if needed)
-        String uniqueId = "UID" + System.currentTimeMillis();
+        String uniqueId = "UNQ_" + UUID.randomUUID().toString().substring(0, 8).toUpperCase();
+        String hashedPassword = password;
 
-        UserDAO dao = new UserDAO();
-        boolean success = dao.registerUser(username, password, uniqueId, email, phone);
+        User user = new User(username, hashedPassword, uniqueId, email, phone);
+        UserDAO userDAO = new UserDAO();
 
-        if (success) {
-            res.getWriter().println("Registration successful. Your Unique ID is: " + uniqueId);
-            // Optionally: redirect to login
-            // res.sendRedirect("userLogin.jsp");
+        if (userDAO.addUser(user)) {
+            response.sendRedirect("userLogin.jsp");
         } else {
-            res.getWriter().println("Error: User already exists or DB error.");
+            request.setAttribute("error", "Registration failed!");
+            request.getRequestDispatcher("userRegister.jsp").forward(request, response);
         }
     }
 }

@@ -1,23 +1,32 @@
 package com.swara;
 
 import com.swara.dao.AdminDAO;
+import java.io.IOException;
+
+import com.swara.model.Admin;
+import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-
-import java.io.IOException;
+import jakarta.servlet.http.HttpSession;
 
 public class AdminLoginServlet extends HttpServlet {
-    protected void doPost(HttpServletRequest req, HttpServletResponse res) throws IOException {
-        String username = req.getParameter("username");
-        String password = req.getParameter("password");
-        String role = req.getParameter("role");
+    protected void doPost(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        String username = request.getParameter("username");
+        String password = request.getParameter("password");
+        String role = request.getParameter("role");
 
-        AdminDAO dao = new AdminDAO();
-        if (dao.validate(username, password, role)) {
-            res.getWriter().println(role + " Login Successful");
+        AdminDAO adminDAO = new AdminDAO();
+        Admin admin = adminDAO.getAdminByUsername(username);
+
+        if (admin != null && admin.getPassword().equals(password) && admin.getRole().equals(role)) {
+            HttpSession session = request.getSession();
+            session.setAttribute("admin", admin);
+            response.sendRedirect("AdminSwara.jsp");
         } else {
-            res.getWriter().println("Invalid admin credentials");
+            request.setAttribute("error", "Invalid credentials or role!");
+            request.getRequestDispatcher("adminLogin.jsp").forward(request, response);
         }
     }
 }
