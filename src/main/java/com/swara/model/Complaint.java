@@ -9,7 +9,7 @@ public class Complaint {
 
     public Complaint(int id, String anonymousId, String complaintName, String licensee, String location,
                      String incidentDate, String description, String role, String department, String status,
-                     InputStream document, String fileName) {
+                     String fileName) {
         this.id = id;
         this.anonymousId = anonymousId;
         this.complaintName = complaintName;

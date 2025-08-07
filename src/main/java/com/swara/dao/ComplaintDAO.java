@@ -59,7 +59,7 @@ public class ComplaintDAO {
                         rs.getString("role"),
                         rs.getString("department"),
                         rs.getString("status"),
-                        null, // Document not retrieved for listing
+                        // Document not retrieved for listing
                         rs.getString("file_name")
                 );
                 complaints.add(complaint);
@@ -69,5 +69,40 @@ public class ComplaintDAO {
             e.printStackTrace();
         }
         return complaints;
+    }
+    public static List<Complaint> getComplaintsByDepartment(String department) {
+        List<Complaint> complaints = new ArrayList<>();
+        try (Connection conn = DBConnection.getConnection()) {
+            // Assuming 'licensee' or 'location' might indicate department; adjust based on schema
+            String sql = "SELECT * FROM complaints WHERE licensee LIKE ? OR location LIKE ?";
+            PreparedStatement stmt = conn.prepareStatement(sql);
+            stmt.setString(1, "%" + department + "%");
+            stmt.setString(2, "%" + department + "%");
+            ResultSet rs = stmt.executeQuery();
+            while (rs.next()) {
+                Complaint complaint = new Complaint(
+                        rs.getInt("id"),
+                        rs.getString("anonymous_id"),
+                        rs.getString("complaint_name"),
+                        rs.getString("licensee"),
+                        rs.getString("location"),
+                        rs.getString("incident_date"),
+                        rs.getString("description"),
+                        rs.getString("recipient"),
+                        rs.getString("status"),
+                        null, // Document not retrieved for listing
+                        rs.getString("file_name")
+                );
+                complaints.add(complaint);
+            }
+        } catch (Exception e) {
+            System.err.println("Error fetching department complaints: " + e.getMessage());
+            e.printStackTrace();
+        }
+        return complaints;
+    }
+
+    public boolean saveComplaint(String uniqueId, String against, String complaint) {
+        return false;
     }
 }

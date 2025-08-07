@@ -5,9 +5,9 @@ import java.sql.DriverManager;
 
 public class DBConnection {
     public static Connection getConnection() throws Exception {
-        String url = "jdbc:mysql://localhost:3306/Swara?useSSL=false";
+        String url = "jdbc:mysql://localhost:3306/swara?useSSL=false";
         String user = "root";
-        String password = "Harshitapanwar@17";
+        String password = "Admin@123";
         try {
             Class.forName("com.mysql.cj.jdbc.Driver");
             Connection conn = DriverManager.getConnection(url, user, password);

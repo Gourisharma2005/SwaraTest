@@ -2,7 +2,6 @@ package com.swara;
 
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.MultipartConfig;
-import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -70,7 +69,6 @@ public class SubmitComplaintServlet extends HttpServlet {
                     role.trim(),
                     department != null ? department.trim() : null,
                     "Pending", // Default status
-                    fileContent,
                     fileName
             );
 
