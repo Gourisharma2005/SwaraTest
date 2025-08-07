@@ -25,7 +25,7 @@ public class SubmitComplaintServlet extends HttpServlet {
             String location = request.getParameter("location");
             String incidentDate = request.getParameter("incident_date");
             String description = request.getParameter("description");
-            String recipient = request.getParameter("recipient");
+            String role = request.getParameter("role");
             String department = request.getParameter("department");
 
             // Validate required fields
@@ -33,13 +33,13 @@ public class SubmitComplaintServlet extends HttpServlet {
                     location == null || location.trim().isEmpty() ||
                     incidentDate == null || incidentDate.trim().isEmpty() ||
                     description == null || description.trim().isEmpty() ||
-                    recipient == null || recipient.trim().isEmpty()) {
+                    role == null || role.trim().isEmpty()) {
                 response.sendRedirect("SwaraUser.jsp?status=error&message=Missing required fields");
                 return;
             }
 
             // Validate department if recipient is HOD
-            if (recipient.equals("HOD") && (department == null || department.trim().isEmpty())) {
+            if (role.equals("HOD") && (department == null || department.trim().isEmpty())) {
                 response.sendRedirect("SwaraUser.jsp?status=error&message=Department is required for HOD complaints");
                 return;
             }
@@ -67,7 +67,7 @@ public class SubmitComplaintServlet extends HttpServlet {
                     location.trim(),
                     incidentDate.trim(),
                     description.trim(),
-                    recipient.trim(),
+                    role.trim(),
                     department != null ? department.trim() : null,
                     "Pending", // Default status
                     fileContent,

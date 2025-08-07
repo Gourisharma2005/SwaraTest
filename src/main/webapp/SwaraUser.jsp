@@ -154,8 +154,8 @@
           <fieldset>
             <legend>Recipient</legend>
             <div class="form-group">
-              <label for="recipient">Send Complaint To *</label>
-              <select id="recipient" name="recipient" required onchange="toggleDepartmentField()">
+              <label for="role">Send Complaint To *</label>
+              <select id="role" name="role" required onchange="toggleDepartmentField()">
                 <option value="" disabled selected>Select recipient</option>
                 <option value="HOD">Head of Department (HOD)</option>
                 <option value="Director">Director</option>
@@ -196,9 +196,9 @@
   <!-- Inline JavaScript for dynamic form behavior -->
   <script>
     function toggleDepartmentField() {
-      const recipient = document.getElementById('recipient').value;
+      const role = document.getElementById('role').value;
       const departmentField = document.getElementById('departmentField');
-      if (recipient === 'HOD') {
+      if (role === 'HOD') {
         departmentField.style.display = 'block';
         document.getElementById('department').setAttribute('required', 'required');
       } else {

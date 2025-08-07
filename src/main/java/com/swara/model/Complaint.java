@@ -4,11 +4,11 @@ import java.io.InputStream;
 
 public class Complaint {
     private int id;
-    private String anonymousId, complaintName, licensee, location, incidentDate, description, recipient, department, status, fileName;
+    private String anonymousId, complaintName, licensee, location, incidentDate, description, role, department, status, fileName;
     private InputStream document;
 
     public Complaint(int id, String anonymousId, String complaintName, String licensee, String location,
-                     String incidentDate, String description, String recipient, String department, String status,
+                     String incidentDate, String description, String role, String department, String status,
                      InputStream document, String fileName) {
         this.id = id;
         this.anonymousId = anonymousId;
@@ -17,7 +17,7 @@ public class Complaint {
         this.location = location;
         this.incidentDate = incidentDate;
         this.description = description;
-        this.recipient = recipient;
+        this.role = role;
         this.department = department;
         this.status = status;
         this.document = document;
@@ -31,7 +31,7 @@ public class Complaint {
     public String getLocation() { return location; }
     public String getIncidentDate() { return incidentDate; }
     public String getDescription() { return description; }
-    public String getRecipient() { return recipient; }
+    public String getRole() { return role; }
     public String getDepartment() { return department; }
     public String getStatus() { return status; }
     public InputStream getDocument() { return document; }
