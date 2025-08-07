@@ -4,12 +4,18 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 
 public class DBConnection {
-    static String url = "jdbc:mysql://localhost:3306/swara";
-    private static final String USER = "root";
-    private static final String PASSWORD = "Admin@123";
-
     public static Connection getConnection() throws Exception {
-        Class.forName("com.mysql.cj.jdbc.Driver");
-        return DriverManager.getConnection(url, USER, PASSWORD);
+        String url = "jdbc:mysql://localhost:3306/Swara?useSSL=false";
+        String user = "root";
+        String password = "Harshitapanwar@17";
+        try {
+            Class.forName("com.mysql.cj.jdbc.Driver");
+            Connection conn = DriverManager.getConnection(url, user, password);
+            System.out.println("Database connection established successfully");
+            return conn;
+        } catch (Exception e) {
+            System.err.println("Database connection failed: " + e.getMessage());
+            throw e;
+        }
     }
 }

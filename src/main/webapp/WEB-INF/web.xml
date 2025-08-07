@@ -42,7 +42,14 @@
     <url-pattern>/userRegister</url-pattern>
   </servlet-mapping>
 
-
+  <servlet>
+    <servlet-name>SubmitComplaintServlet</servlet-name>
+    <servlet-class>com.swara.SubmitComplaintServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>SubmitComplaintServlet</servlet-name>
+    <url-pattern>/SubmitComplaintServlet</url-pattern>
+  </servlet-mapping>
 
   <welcome-file-list>
     <welcome-file>index.html</welcome-file>

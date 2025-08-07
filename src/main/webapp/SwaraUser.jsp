@@ -1,7 +1,9 @@
+
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ page import="java.util.List" %>
 <%@ page import="com.swara.model.User" %>
 <%@ page import="com.swara.model.Complaint" %>
+<%@ page import="com.swara.dao.ComplaintDAO" %>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -14,7 +16,6 @@
   <header>
     <div class="logo">Swara - User Portal</div>
     <div class="profile">
-      <img src="https://via.placeholder.com/40" alt="User Profile" />
       <span>Hello, <%= session.getAttribute("user") != null ? ((User) session.getAttribute("user")).getUsername() : "Guest" %></span>
     </div>
   </header>
@@ -27,7 +28,6 @@
         <li class="section-title">📍 Track Status</li>
         <li class="section-title">📋 File a Case</li>
         <li class="section-title">💬 Chat</li>
-
         <div class="filters">
           <h3>🔎 Filter Complaints</h3>
           <input type="text" placeholder="Search..." onkeyup="filterTable(this.value)" />
@@ -38,7 +38,6 @@
           </select>
           <input type="date" onchange="filterTable(document.querySelector('.filters input').value, document.querySelector('.filters select').value, this.value)" />
         </div>
-
         <li class="section-title">⚙️ Settings</li>
         <li class="section-title"><a href="logout">Logout</a></li>
       </ul>
@@ -49,6 +48,17 @@
       <!-- Dashboard Section -->
       <section class="dashboard" id="dashboardContent">
         <h1>Welcome to Your Safe Space 💖</h1>
+
+        <!-- Display success/error message -->
+        <%
+          String status = request.getParameter("status");
+          String message = request.getParameter("message");
+          if (status != null) {
+        %>
+        <div class="alert <%= status.equals("success") ? "alert-success" : "alert-error" %>">
+          <%= message != null ? message : (status.equals("success") ? "Complaint submitted successfully!" : "Failed to submit complaint.") %>
+        </div>
+        <% } %>
 
         <!-- Display anonymous_id -->
         <section>
@@ -71,9 +81,9 @@
           </div>
         </section>
 
-        <!-- Static Complaint History Table (you can make this dynamic later) -->
+        <!-- Dynamic Complaint History Table -->
         <section class="complaint-history">
-          <h2>📋 My Complaint</h2>
+          <h2>📋 My Complaints</h2>
           <table>
             <thead>
               <tr>
@@ -84,18 +94,24 @@
               </tr>
             </thead>
             <tbody>
+              <%
+                List<Complaint> complaints = ComplaintDAO.getAllComplaints();
+                if (complaints.isEmpty()) {
+              %>
               <tr>
-                <td>#C101</td>
-                <td>Harassment in Lab</td>
-                <td><span class="status pending">Pending</span></td>
-                <td><button>View</button></td>
+                <td colspan="4">No complaints found.</td>
               </tr>
+              <%
+                } else {
+                  for (Complaint complaint : complaints) {
+              %>
               <tr>
-                <td>#C098</td>
-                <td>Comments in Corridor</td>
-                <td><span class="status resolved">Resolved</span></td>
-                <td><button>Download</button></td>
+                <td><%= complaint.getId() %></td>
+                <td><%= complaint.getDescription().length() > 50 ? complaint.getDescription().substring(0, 50) + "..." : complaint.getDescription() %></td>
+                <td><span class="status <%= complaint.getStatus().toLowerCase() %>"><%= complaint.getStatus() %></span></td>
+                <td><button onclick="viewComplaint('<%= complaint.getId() %>')">View</button></td>
               </tr>
+              <% } } %>
             </tbody>
           </table>
         </section>
@@ -104,46 +120,61 @@
       <!-- Complaint Form Section (Hidden by Default) -->
       <section class="form-section" id="complaintFormSection" style="display: none;">
         <h1>Submit a Complaint</h1>
-
-        <form class="complaint-form" novalidate>
+        <form class="complaint-form" action="SubmitComplaintServlet" method="post" enctype="multipart/form-data" novalidate>
           <fieldset>
             <legend>Personal Details</legend>
             <div class="form-group">
-              <label for="name">Complainant Name *</label>
-              <input type="text" id="name" name="name" required placeholder="Your full name" autocomplete="name" />
+              <label for="anonymous_id">Anonymous ID (Optional)</label>
+              <input type="text" id="anonymous_id" name="anonymous_id" placeholder="Leave blank if you want to stay anonymous" />
             </div>
-
             <div class="form-group">
-              <label for="phone">Phone Number *</label>
-              <input type="tel" id="phone" name="phone" required placeholder="10-digit mobile number"
-                     pattern="[0-9]{10}" maxlength="10" autocomplete="tel" />
-              <small class="helper-text">Enter a valid 10-digit number</small>
+              <label for="complaint_name">Complainant Name *</label>
+              <input type="text" id="complaint_name" name="complaint_name" required placeholder="Your full name" autocomplete="name" />
             </div>
           </fieldset>
-
           <fieldset>
             <legend>Incident Details</legend>
             <div class="form-group">
               <label for="licensee">Name of Licensee</label>
               <input type="text" id="licensee" name="licensee" placeholder="Name of the accused (if known)" />
             </div>
-
             <div class="form-group">
               <label for="location">Place of Incident *</label>
               <input type="text" id="location" name="location" required placeholder="E.g., Chemistry Lab, Corridor" />
             </div>
-
             <div class="form-group">
               <label for="date">Date of Incident *</label>
               <input type="date" id="date" name="incident_date" required max="<%= new java.text.SimpleDateFormat("yyyy-MM-dd").format(new java.util.Date()) %>" />
             </div>
-
             <div class="form-group full-width">
               <label for="description">Description *</label>
               <textarea id="description" name="description" rows="4" required placeholder="Describe the incident in detail..."></textarea>
             </div>
           </fieldset>
-
+          <fieldset>
+            <legend>Recipient</legend>
+            <div class="form-group">
+              <label for="recipient">Send Complaint To *</label>
+              <select id="recipient" name="recipient" required onchange="toggleDepartmentField()">
+                <option value="" disabled selected>Select recipient</option>
+                <option value="HOD">Head of Department (HOD)</option>
+                <option value="Director">Director</option>
+              </select>
+            </div>
+            <div class="form-group" id="departmentField" style="display: none;">
+              <label for="department">Department *</label>
+              <select id="department" name="department">
+                <option value="" disabled selected>Select department</option>
+                <option value="Computer Science">Computer Science</option>
+                <option value="Electrical Engineering">Electrical Engineering</option>
+                <option value="Mechanical Engineering">Mechanical Engineering</option>
+                <option value="Civil Engineering">Civil Engineering</option>
+                <option value="Physics">Physics</option>
+                <option value="Chemistry">Chemistry</option>
+                <option value="Mathematics">Mathematics</option>
+              </select>
+            </div>
+          </fieldset>
           <fieldset class="full-width">
             <legend>Evidence (Optional)</legend>
             <div class="form-group">
@@ -152,7 +183,6 @@
               <small class="helper-text">Accepted formats: PDF, JPG, PNG (max 5MB)</small>
             </div>
           </fieldset>
-
           <button type="submit" class="submit-btn">Submit</button>
           <button type="button" class="close-btn" onclick="closeForm()">Cancel</button>
         </form>
@@ -163,7 +193,41 @@
   <!-- Floating Button -->
   <button class="register-complaint-btn" onclick="openForm()">➕ Register Complaint</button>
 
-  <!-- JS -->
-  <script src="css/us.js"></script>
+  <!-- Inline JavaScript for dynamic form behavior -->
+  <script>
+    function toggleDepartmentField() {
+      const recipient = document.getElementById('recipient').value;
+      const departmentField = document.getElementById('departmentField');
+      if (recipient === 'HOD') {
+        departmentField.style.display = 'block';
+        document.getElementById('department').setAttribute('required', 'required');
+      } else {
+        departmentField.style.display = 'none';
+        document.getElementById('department').removeAttribute('required');
+      }
+    }
+
+    function openForm() {
+      document.getElementById('dashboardContent').style.display = 'none';
+      document.getElementById('complaintFormSection').style.display = 'block';
+    }
+
+    function closeForm() {
+      document.getElementById('complaintFormSection').style.display = 'none';
+      document.getElementById('dashboardContent').style.display = 'block';
+      toggleDepartmentField(); // Reset department field visibility
+    }
+
+    function viewComplaint(complaintId) {
+      alert('View complaint with ID: ' + complaintId);
+    }
+
+    function filterTable(search, status, date) {
+      console.log('Filtering with:', search, status, date);
+    }
+  </script>
+
+  <!-- External JS -->
+  <script src="js/us.js"></script>
 </body>
 </html>
