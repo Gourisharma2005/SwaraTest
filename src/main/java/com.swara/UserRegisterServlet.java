@@ -19,10 +19,10 @@ public class UserRegisterServlet extends HttpServlet {
         String email = request.getParameter("email");
         String phone = request.getParameter("phone");
 
-        String uniqueId = "UNQ_" + UUID.randomUUID().toString().substring(0, 8).toUpperCase();
+        String anonymousId = "UNQ_" + UUID.randomUUID().toString().substring(0, 8).toUpperCase();
         String hashedPassword = password;
 
-        User user = new User(username, hashedPassword, uniqueId, email, phone);
+        User user = new User(username, hashedPassword, anonymousId, email, phone);
         UserDAO userDAO = new UserDAO();
 
         if (userDAO.addUser(user)) {

@@ -20,14 +20,14 @@ public class UserDAO {
             if (rs.next()) {
                 String username = rs.getString("username");
                 String password = rs.getString("password");
-                String uniqueId = rs.getString("unique_id");
+                String anonymousId = rs.getString("anonymous_id");
                 String phone = rs.getString("phone");
 
                 user = new User();
                 user.setUsername(username);
                 user.setPassword(password);
-                user.setUniqueId(uniqueId);
-                user.setEmail(email); // setting email from parameter
+                user.setAnonymousId(anonymousId);
+                user.setEmail(email);
                 user.setPhone(phone);
             }
         } catch (Exception e) {
@@ -43,7 +43,7 @@ public class UserDAO {
             PreparedStatement ps = conn.prepareStatement(query);
             ps.setString(1, user.getUsername());
             ps.setString(2, user.getPassword());
-            ps.setString(3, user.getUniqueId());
+            ps.setString(3, user.getAnonymousId());
             ps.setString(4, user.getEmail());
             ps.setString(5, user.getPhone());
             int rows = ps.executeUpdate();

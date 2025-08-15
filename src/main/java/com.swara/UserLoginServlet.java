@@ -23,7 +23,7 @@ public class UserLoginServlet extends HttpServlet {
         if (user != null && user.getPassword().equals(password)) {
             HttpSession session = request.getSession();
             session.setAttribute("user", user);
-            session.setAttribute("unique_id", user.getUniqueId());
+            session.setAttribute("anonymous_id", user.getAnonymousId());
             response.sendRedirect("SwaraUser.jsp");
         } else {
             request.setAttribute("error", "Invalid credentials!");
