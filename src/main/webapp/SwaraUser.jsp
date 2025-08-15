@@ -13,12 +13,16 @@
   <link rel="stylesheet" href="css/SwaraUser.css" />
 </head>
 <body>
-  <header>
-    <div class="logo">Swara - User Portal</div>
-    <div class="profile">
-      <span>Hello, <%= session.getAttribute("user") != null ? ((User) session.getAttribute("user")).getUsername() : "Guest" %></span>
-    </div>
-  </header>
+<header>
+  <div class="logo">Swara - User Portal</div>
+  <div class="profile">
+    <%
+      User user = (User) session.getAttribute("user");
+      String username = (user != null) ? user.getUsername() : "Guest";
+    %>
+    <span>Hello, <%= username %></span>
+  </div>
+</header>
 
   <div class="container">
     <!-- Sidebar -->
@@ -60,11 +64,11 @@
         </div>
         <% } %>
 
-        <!-- Display anonymous_id -->
-        <section>
-          <h2>Your Anonymous ID</h2>
-          <p><%= session.getAttribute("anonymous_id") != null ? session.getAttribute("anonymous_id") : "Not available" %></p>
-        </section>
+        <!-- Display anonymous_id (moved to header, but kept here as a fallback if needed) -->
+                <section class="user-details">
+                  <h2>Your Anonymous ID</h2>
+                  <p><%= session.getAttribute("anonymous_id") != null ? session.getAttribute("anonymous_id") : "Not available" %></p>
+                </section>
 
         <section class="stats">
           <div class="card">
