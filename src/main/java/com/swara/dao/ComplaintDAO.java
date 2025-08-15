@@ -70,14 +70,16 @@ public class ComplaintDAO {
         }
         return complaints;
     }
-    public static List<Complaint> getComplaintsByDepartment(String department) {
+    public static List<Complaint> getComplaintsByAnonymousId(String anonymousId) {
         List<Complaint> complaints = new ArrayList<>();
+        if (anonymousId == null || anonymousId.trim().isEmpty()) {
+            return complaints; // no ID, no complaints
+        }
+
         try (Connection conn = DBConnection.getConnection()) {
-            // Assuming 'licensee' or 'location' might indicate department; adjust based on schema
-            String sql = "SELECT * FROM complaints WHERE licensee LIKE ? OR location LIKE ?";
+            String sql = "SELECT * FROM complaints WHERE anonymous_id = ?";
             PreparedStatement stmt = conn.prepareStatement(sql);
-            stmt.setString(1, "%" + department + "%");
-            stmt.setString(2, "%" + department + "%");
+            stmt.setString(1, anonymousId);
             ResultSet rs = stmt.executeQuery();
             while (rs.next()) {
                 Complaint complaint = new Complaint(
@@ -89,20 +91,16 @@ public class ComplaintDAO {
                         rs.getString("incident_date"),
                         rs.getString("description"),
                         rs.getString("role"),
+                        rs.getString("department"),
                         rs.getString("status"),
-                        null, // Document not retrieved for listing
                         rs.getString("file_name")
                 );
                 complaints.add(complaint);
             }
         } catch (Exception e) {
-            System.err.println("Error fetching department complaints: " + e.getMessage());
             e.printStackTrace();
         }
         return complaints;
     }
 
-    public boolean saveComplaint(String uniqueId, String against, String complaint) {
-        return false;
-    }
 }

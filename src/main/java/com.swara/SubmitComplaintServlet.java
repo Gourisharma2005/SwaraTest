@@ -5,20 +5,27 @@ import jakarta.servlet.annotation.MultipartConfig;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 import jakarta.servlet.http.Part;
 import java.io.IOException;
 import java.io.InputStream;
 import com.swara.model.Complaint;
 import com.swara.dao.ComplaintDAO;
 
-
 @MultipartConfig(maxFileSize = 5 * 1024 * 1024) // 5MB limit
 public class SubmitComplaintServlet extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         try {
-            // Extract form data
+            HttpSession session = request.getSession();
+
+            // Get anonymous ID from form OR session
             String anonymousId = request.getParameter("anonymous_id");
+            if (anonymousId == null || anonymousId.trim().isEmpty()) {
+                anonymousId = (String) session.getAttribute("anonymous_id");
+            }
+
+            // Extract other form data
             String complaintName = request.getParameter("complaint_name");
             String licensee = request.getParameter("licensee");
             String location = request.getParameter("location");
@@ -38,7 +45,7 @@ public class SubmitComplaintServlet extends HttpServlet {
             }
 
             // Validate department if recipient is HOD
-            if (role.equals("HOD") && (department == null || department.trim().isEmpty())) {
+            if ("HOD".equalsIgnoreCase(role) && (department == null || department.trim().isEmpty())) {
                 response.sendRedirect("SwaraUser.jsp?status=error&message=Department is required for HOD complaints");
                 return;
             }
