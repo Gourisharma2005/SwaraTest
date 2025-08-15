@@ -88,7 +88,7 @@ public class ComplaintDAO {
                         rs.getString("location"),
                         rs.getString("incident_date"),
                         rs.getString("description"),
-                        rs.getString("recipient"),
+                        rs.getString("role"),
                         rs.getString("status"),
                         null, // Document not retrieved for listing
                         rs.getString("file_name")
