@@ -51,18 +51,22 @@
                     List<Complaint> complaints;
                     if ("Hod".equalsIgnoreCase((String) session.getAttribute("role"))) {
                         String department = (String) session.getAttribute("department");
-                        complaints = complaintDAO.getComplaintsByDepartment(department);
+                        complaints = allComplaints.stream()
+                            .filter(c -> c.getDepartment() != null && c.getDepartment().equals(department))
+                            .collect(Collectors.toList());
                     } else {
                         complaints = allComplaints;
                     }
                     int total = complaints.size();
+                    int unseen = (int) complaints.stream().filter(c -> "Unseen".equals(c.getStatus())).count();
                     int pending = (int) complaints.stream().filter(c -> "Pending".equals(c.getStatus())).count();
+                    int inProgress = (int) complaints.stream().filter(c -> "In-Progress".equals(c.getStatus())).count();
+                    int transferredToDirector = (int) complaints.stream().filter(c -> "Transferred to Director".equals(c.getStatus())).count();
+                    int transferredToNGO = (int) complaints.stream().filter(c -> "Transferred to NGO".equals(c.getStatus())).count();
                     int resolved = (int) complaints.stream().filter(c -> "Resolved".equals(c.getStatus())).count();
-                    int priority = (int) complaints.stream().filter(c -> "Priority".equals(c.getStatus())).count();
                     double pendingPercentage = total > 0 ? (pending * 100.0) / total : 0;
-                    // Simple analytics: department-wise complaint count (for Director only)
                     java.util.Map<String, Long> deptComplaints = allComplaints.stream()
-                            .collect(Collectors.groupingBy(c -> c.getLicensee(), Collectors.counting()));
+                            .collect(Collectors.groupingBy(c -> c.getDepartment() != null ? c.getDepartment() : "N/A", Collectors.counting()));
                     String maxDept = deptComplaints.entrySet().stream().max(java.util.Map.Entry.comparingByValue()).map(e -> e.getKey()).orElse("N/A");
                     long maxDeptCount = deptComplaints.getOrDefault(maxDept, 0L);
                 %>
@@ -71,16 +75,22 @@
                     Pending: <span><%= pending %></span>
                     <div class="progress-bar" style="width: <%= pendingPercentage %>%"></div>
                 </div>
+                <div class="metric-card">Unseen: <span><%= unseen %></span></div>
+                <div class="metric-card">In-Progress: <span><%= inProgress %></span></div>
+                <div class="metric-card">To Director: <span><%= transferredToDirector %></span></div>
+                <div class="metric-card">To NGO: <span><%= transferredToNGO %></span></div>
                 <div class="metric-card resolved">Resolved: <span><%= resolved %></span></div>
-                <div class="metric-card priority">Priority: <span><%= priority %></span></div>
             </div>
             <div class="complaint-section" id="complaint-section">
                 <div class="filter-bar">
                     <select id="statusFilter" onchange="filterComplaints()">
                         <option value="">All Statuses</option>
+                        <option value="Unseen">Unseen</option>
                         <option value="Pending">Pending</option>
+                        <option value="In-Progress">In-Progress</option>
+                        <option value="Transferred to Director">Transferred to Director</option>
+                        <option value="Transferred to NGO">Transferred to NGO</option>
                         <option value="Resolved">Resolved</option>
-                        <option value="Priority">Priority</option>
                     </select>
                     <select id="deptFilter" onchange="filterComplaints()">
                         <option value="">All Departments</option>
@@ -110,9 +120,26 @@
                                 <td><%= c.getId() %></td>
                                 <td><%= c.getAnonymousId() %></td>
                                 <td><%= c.getComplaintName() %></td>
-                                <td><%= c.getLicensee() %></td>
+                                <td><%= c.getDepartment() != null ? c.getDepartment() : "N/A" %></td>
                                 <td><%= c.getStatus() %></td>
-                                <td><button onclick="openModal(<%= c.getId() %>, '<%= c.getComplaintName() %>', '<%= c.getDescription() %>', '<%= c.getStatus() %>')">View</button></td>
+                                <td>
+                                    <form action="UpdateStatusServlet" method="post" style="display: inline;">
+                                        <input type="hidden" name="anonymous_id" value="<%= c.getAnonymousId() %>">
+                                        <input type="hidden" name="status" value="Pending">
+                                        <button type="submit" <%= !"Unseen".equals(c.getStatus()) ? "disabled" : "" %>>Mark Pending</button>
+                                    </form>
+                                    <form action="UpdateStatusServlet" method="post" style="display: inline;">
+                                        <input type="hidden" name="anonymous_id" value="<%= c.getAnonymousId() %>">
+                                        <input type="hidden" name="status" value="In-Progress">
+                                        <button type="submit" <%= !"Pending".equals(c.getStatus()) ? "disabled" : "" %>>Mark In-Progress</button>
+                                    </form>
+                                    <form action="UpdateStatusServlet" method="post" style="display: inline;">
+                                        <input type="hidden" name="anonymous_id" value="<%= c.getAnonymousId() %>">
+                                        <input type="hidden" name="status" value="Resolved">
+                                        <button type="submit" <%= !("In-Progress".equals(c.getStatus()) || "Transferred to Director".equals(c.getStatus()) || "Transferred to NGO".equals(c.getStatus())) ? "disabled" : "" %>>Resolve</button>
+                                    </form>
+                                    <button onclick="openModal('<%= c.getId() %>', '<%= c.getComplaintName() %>', '<%= c.getDescription() %>', '<%= c.getStatus() %>')">View</button>
+                                </td>
                             </tr>
                         <% } %>
                     </tbody>
@@ -143,7 +170,11 @@
             <% if ("Director".equalsIgnoreCase((String) session.getAttribute("role")) || "NGO".equalsIgnoreCase((String) session.getAttribute("role"))) { %>
                 <div class="ngo-section" id="ngo-interface">
                     <h2>NGO/Women Officer Interface</h2>
-                    <p>Escalated Complaints: <%-- Logic to filter escalated complaints --%></p> <!-- Placeholder, requires backend -->
+                    <p>Escalated Complaints: <%
+                        int escalated = (int) allComplaints.stream()
+                            .filter(c -> "Transferred to Director".equals(c.getStatus()) || "Transferred to NGO".equals(c.getStatus()))
+                            .count();
+                    %><%= escalated %></p>
                     <button onclick="alert('View escalated complaints')">View</button>
                 </div>
             <% } %>

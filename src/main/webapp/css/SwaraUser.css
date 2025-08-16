@@ -135,19 +135,22 @@ header {
 }
 
 .status {
-  padding: 0.3rem 0.7rem;
-  border-radius: 20px;
-  font-size: 0.8rem;
+  display: inline-block;
+  padding: 0.5rem 1rem; /* Match button padding */
+  border-radius: 20px; /* Match button border-radius */
+  font-size: 0.8rem; /* Consistent with table text */
   color: white;
+  cursor: default; /* Indicate view-only */
+  text-align: center;
 }
 
-.status.pending {
-  background: #ff9800;
-}
-
-.status.resolved {
-  background: #4caf50;
-}
+/* Updated color scheme */
+.status.unseen { background-color: #000000; } /* Black */
+.status.pending { background-color: #ffff00; color: #000000; } /* Yellow with black text for readability */
+.status.in-progress { background-color: #0000ff; } /* Blue */
+.status.transferred-to-director { background-color: #800080; } /* Purple */
+.status.transferred-to-ngo { background-color: #ffa500; color: #000000; } /* Orange with black text for readability */
+.status.resolved { background-color: #00ff00; color: #000000; } /* Green with black text for readability */
 
 button {
   padding: 0.5rem 1rem;
@@ -255,8 +258,6 @@ button:hover {
 .close-btn:hover {
   background: #777;
 }
-
-
 
 fieldset {
   border: 1px solid #ddd;

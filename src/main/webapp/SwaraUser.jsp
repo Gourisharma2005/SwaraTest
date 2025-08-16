@@ -10,6 +10,35 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Swara User Dashboard</title>
   <link rel="stylesheet" href="css/SwaraUser.css" />
+  <style>
+    /* Inline CSS to match status span with action button */
+    .status {
+      display: inline-block;
+      padding: 5px 10px; /* Same padding as button */
+      border: 1px solid #ccc; /* Optional border for consistency */
+      border-radius: 5px; /* Same rounded corners as button */
+      font-size: 14px; /* Adjust to match button text size */
+      text-align: center;
+      width: 80px; /* Match button width, adjust as needed */
+      box-sizing: border-box; /* Ensure padding doesn't affect width */
+    }
+    /* Color scheme for status */
+    .status.unseen { background-color: #000000; color: #ffffff; } /* Black */
+    .status.pending { background-color: #ffff00; color: #000000; } /* Yellow */
+    .status.in-progress { background-color: #0000ff; color: #ffffff; } /* Blue */
+    .status.transferred-to-director { background-color: #800080; color: #ffffff; } /* Purple */
+    .status.transferred-to-ngo { background-color: #ffa500; color: #000000; } /* Orange */
+    .status.resolved { background-color: #00ff00; color: #000000; } /* Green */
+
+    /* Ensure button styling matches (if not already in SwaraUser.css) */
+    button {
+      padding: 5px 10px;
+      border-radius: 5px;
+      font-size: 14px;
+      width: 80px;
+      cursor: pointer;
+    }
+  </style>
 </head>
 <body>
   <header>
@@ -32,7 +61,11 @@
           <input type="text" placeholder="Search..." onkeyup="filterTable(this.value)" />
           <select onchange="filterTable(document.querySelector('.filters input').value, this.value)">
             <option value="">Status</option>
+            <option value="Unseen">Unseen</option>
             <option value="Pending">Pending</option>
+            <option value="In-Progress">In-Progress</option>
+            <option value="Transferred to Director">Transferred to Director</option>
+            <option value="Transferred to NGO">Transferred to NGO</option>
             <option value="Resolved">Resolved</option>
           </select>
           <input type="date" onchange="filterTable(document.querySelector('.filters input').value, document.querySelector('.filters select').value, this.value)" />
@@ -67,15 +100,34 @@
 
         <section class="stats">
           <div class="card">
-            <h2><%= session.getAttribute("activeComplaints") != null ? session.getAttribute("activeComplaints") : "0" %></h2>
+            <h2><%
+              String anonymousId = (String) session.getAttribute("anonymous_id");
+              int activeComplaints = 0;
+              if (anonymousId != null) {
+                  activeComplaints = (int) ComplaintDAO.getComplaintsByAnonymousId(anonymousId).stream()
+                      .filter(c -> c.getStatus() != Complaint.Status.RESOLVED).count();
+              }
+              %><%= activeComplaints %></h2>
             <p>Active Complaints</p>
           </div>
           <div class="card">
-            <h2><%= session.getAttribute("resolvedComplaints") != null ? session.getAttribute("resolvedComplaints") : "0" %></h2>
+            <h2><%
+              int resolvedComplaints = 0;
+              if (anonymousId != null) {
+                  resolvedComplaints = (int) ComplaintDAO.getComplaintsByAnonymousId(anonymousId).stream()
+                      .filter(c -> c.getStatus() == Complaint.Status.RESOLVED).count();
+              }
+              %><%= resolvedComplaints %></h2>
             <p>Resolved</p>
           </div>
           <div class="card">
-            <h2><%= session.getAttribute("escalatedComplaints") != null ? session.getAttribute("escalatedComplaints") : "0" %></h2>
+            <h2><%
+              int escalatedComplaints = 0;
+              if (anonymousId != null) {
+                  escalatedComplaints = (int) ComplaintDAO.getComplaintsByAnonymousId(anonymousId).stream()
+                      .filter(c -> c.getStatus() == Complaint.Status.TRANSFERRED_TO_DIRECTOR || c.getStatus() == Complaint.Status.TRANSFERRED_TO_NGO).count();
+              }
+              %><%= escalatedComplaints %></h2>
             <p>Escalated</p>
           </div>
         </section>
@@ -92,32 +144,27 @@
                 <th>Actions</th>
               </tr>
             </thead>
-<tbody>
-<%
-    String anonymousId = (String) session.getAttribute("anonymous_id");
-    List<Complaint> complaints = ComplaintDAO.getComplaintsByAnonymousId(anonymousId);
-
-    if (complaints.isEmpty()) {
-%>
-    <tr>
-        <td colspan="4">No complaints found.</td>
-    </tr>
-<%
-    } else {
-        for (Complaint complaint : complaints) {
-%>
-    <tr>
-        <td><%= complaint.getId() %></td>
-        <td><%= complaint.getComplaintName() %></td>
-        <td><span class="status <%= complaint.getStatus().toLowerCase() %>"><%= complaint.getStatus() %></span></td>
-        <td><button onclick="viewComplaint('<%= complaint.getId() %>')">View</button></td>
-    </tr>
-<%
-        }
-    }
-%>
-</tbody>
-
+            <tbody>
+              <%
+                anonymousId = (String) session.getAttribute("anonymous_id");
+                List<Complaint> complaints = (anonymousId != null) ? ComplaintDAO.getComplaintsByAnonymousId(anonymousId) : List.of();
+                if (complaints.isEmpty()) {
+              %>
+              <tr>
+                <td colspan="4">No complaints found.</td>
+              </tr>
+              <%
+                } else {
+                  for (Complaint complaint : complaints) {
+              %>
+              <tr>
+                <td><%= complaint.getAnonymousId() %></td>
+                <td><%= complaint.getComplaintName() != null ? complaint.getComplaintName() : "No Subject" %></td>
+                <td><span class="status <%= complaint.getStatus().name().toLowerCase().replace(" ", "-") %>" readonly><%= complaint.getStatus() %></span></td>
+                <td><button onclick="viewComplaint('<%= complaint.getAnonymousId() %>')">View</button></td>
+              </tr>
+              <% } } %>
+            </tbody>
           </table>
         </section>
       </section>
@@ -130,7 +177,7 @@
             <legend>Personal Details</legend>
             <div class="form-group">
               <label for="anonymous_id">Anonymous ID</label>
-              <input type="text" id="anonymous_id" name="anonymous_id" placeholder="Leave blank if you want to stay anonymous" />
+              <input type="text" id="anonymous_id" name="anonymous_id" value="<%= session.getAttribute("anonymous_id") != null ? session.getAttribute("anonymous_id") : "" %>" readonly />
             </div>
             <div class="form-group">
               <label for="complaint_name">Complainant Name *</label>
@@ -197,40 +244,6 @@
 
   <!-- Floating Button -->
   <button class="register-complaint-btn" onclick="openForm()">➕ Register Complaint</button>
-
-  <!-- Inline JavaScript for dynamic form behavior -->
-  <script>
-    function toggleDepartmentField() {
-      const role = document.getElementById('role').value;
-      const departmentField = document.getElementById('departmentField');
-      if (role === 'HOD') {
-        departmentField.style.display = 'block';
-        document.getElementById('department').setAttribute('required', 'required');
-      } else {
-        departmentField.style.display = 'none';
-        document.getElementById('department').removeAttribute('required');
-      }
-    }
-
-    function openForm() {
-      document.getElementById('dashboardContent').style.display = 'none';
-      document.getElementById('complaintFormSection').style.display = 'block';
-    }
-
-    function closeForm() {
-      document.getElementById('complaintFormSection').style.display = 'none';
-      document.getElementById('dashboardContent').style.display = 'block';
-      toggleDepartmentField(); // Reset department field visibility
-    }
-
-    function viewComplaint(complaintId) {
-      alert('View complaint with ID: ' + complaintId);
-    }
-
-    function filterTable(search, status, date) {
-      console.log('Filtering with:', search, status, date);
-    }
-  </script>
 
   <!-- External JS -->
   <script src="js/us.js"></script>

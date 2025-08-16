@@ -18,7 +18,9 @@ body {
     color: white;
     padding: 20px;
     transition: transform 0.3s ease;
-    position: relative;
+    position: fixed;
+    height: 100%;
+    z-index: 1000;
 }
 
 .sidebar-header {
@@ -79,6 +81,7 @@ body {
     flex-grow: 1;
     padding: 30px;
     overflow-y: auto;
+    margin-left: 250px;
 }
 
 header {
@@ -183,12 +186,15 @@ header h1 {
 }
 
 .pending { background: linear-gradient(45deg, #e74c3c, #c0392b); color: white; }
+.unseen { background: linear-gradient(45deg, #bdc3c7, #95a5a6); color: white; }
+.in-progress { background: linear-gradient(45deg, #3498db, #2980b9); color: white; }
+.transferred-to-director { background: linear-gradient(45deg, #9b59b6, #8e44ad); color: white; }
+.transferred-to-ngo { background: linear-gradient(45deg, #f39c12, #e67e22); color: white; }
 .resolved { background: linear-gradient(45deg, #2ecc71, #27ae60); color: white; }
-.priority { background: linear-gradient(45deg, #3498db, #2980b9); color: white; }
 
 .progress-bar {
     height: 5px;
-    background: #fff;
+    background: rgba(255, 255, 255, 0.7);
     position: absolute;
     bottom: 0;
     left: 0;
@@ -196,9 +202,12 @@ header h1 {
     transition: width 0.3s ease;
 }
 
-.pending .progress-bar {
-    background: #fff;
-}
+.pending .progress-bar { background: rgba(255, 255, 255, 0.9); }
+.unseen .progress-bar { background: rgba(255, 255, 255, 0.9); }
+.in-progress .progress-bar { background: rgba(255, 255, 255, 0.9); }
+.transferred-to-director .progress-bar { background: rgba(255, 255, 255, 0.9); }
+.transferred-to-ngo .progress-bar { background: rgba(255, 255, 255, 0.9); }
+.resolved .progress-bar { background: rgba(255, 255, 255, 0.9); }
 
 .complaint-section, .analytics-section, .sentiment-section, .ngo-section, .report-section {
     background: #fff;
@@ -256,6 +265,22 @@ header h1 {
     background: #f5f6fa;
 }
 
+.status-badge {
+    padding: 5px 10px;
+    border-radius: 20px;
+    color: #fff;
+    font-size: 0.9rem;
+    display: inline-block;
+    text-transform: capitalize;
+}
+
+.unseen { background: linear-gradient(45deg, #bdc3c7, #95a5a6); }
+.pending { background: linear-gradient(45deg, #e74c3c, #c0392b); }
+.in-progress { background: linear-gradient(45deg, #3498db, #2980b9); }
+.transferred-to-director { background: linear-gradient(45deg, #9b59b6, #8e44ad); }
+.transferred-to-ngo { background: linear-gradient(45deg, #f39c12, #e67e22); }
+.resolved { background: linear-gradient(45deg, #2ecc71, #27ae60); }
+
 .complaint-table button {
     padding: 8px 15px;
     background: #3498db;
@@ -264,10 +289,16 @@ header h1 {
     border-radius: 5px;
     cursor: pointer;
     transition: background 0.3s;
+    margin-right: 5px;
 }
 
 .complaint-table button:hover {
     background: #2980b9;
+}
+
+.complaint-table button:disabled {
+    background: #95a5a6;
+    cursor: not-allowed;
 }
 
 .analytics-grid {
@@ -410,6 +441,13 @@ header h1 {
     background: #fce4ec;
 }
 
+.chat-timestamp {
+    font-size: 0.8em;
+    color: #666;
+    display: block;
+    margin-top: 5px;
+}
+
 .chat-input {
     display: flex;
     gap: 10px;
@@ -451,6 +489,7 @@ header h1 {
     }
     .main-content {
         padding: 15px;
+        margin-left: 0;
     }
     .metrics-grid {
         grid-template-columns: 1fr 1fr;
