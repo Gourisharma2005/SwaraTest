@@ -161,4 +161,33 @@ public class ComplaintDAO {
         }
         return success;
     }
+
+    public static Complaint getComplaintByAnonymousIdAndComplaintId(String anonymousId, int complaintId) {
+        try (Connection conn = DBConnection.getConnection()) {
+            String sql = "SELECT * FROM complaints WHERE anonymous_id = ? AND id = ?";
+            PreparedStatement stmt = conn.prepareStatement(sql);
+            stmt.setString(1, anonymousId);
+            stmt.setInt(2, complaintId);
+            ResultSet rs = stmt.executeQuery();
+            if (rs.next()) {
+                return new Complaint(
+                        rs.getInt("id"),
+                        rs.getString("anonymous_id"),
+                        rs.getString("complaint_name"),
+                        rs.getString("licensee"),
+                        rs.getString("location"),
+                        rs.getString("incident_date"),
+                        rs.getString("description"),
+                        rs.getString("role"),
+                        rs.getString("department"),
+                        Complaint.Status.valueOf(rs.getString("status").toUpperCase()),
+                        rs.getString("file_name")
+                );
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
 }

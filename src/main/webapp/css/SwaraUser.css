@@ -1,3 +1,4 @@
+/* Reset & Base */
 * {
   margin: 0;
   padding: 0;
@@ -9,6 +10,7 @@ body {
   background: #fef6f9;
 }
 
+/* Header */
 header {
   background: #873F39;
   color: white;
@@ -35,11 +37,13 @@ header {
   border-radius: 50%;
 }
 
+/* Layout */
 .container {
   display: flex;
   height: calc(100vh - 72px);
 }
 
+/* Sidebar */
 .sidebar {
   width: 280px;
   background: white;
@@ -87,12 +91,14 @@ header {
   border: 1px solid #ccc;
 }
 
+/* Main Content */
 .main-content {
   flex: 1;
   overflow-y: auto;
   padding: 2rem;
 }
 
+/* Dashboard */
 .dashboard h1 {
   color: #873F39;
   margin-bottom: 2rem;
@@ -118,6 +124,7 @@ header {
   color: #873F39;
 }
 
+/* Complaint History Table */
 .complaint-history table {
   width: 100%;
   background: white;
@@ -134,24 +141,29 @@ header {
   text-align: left;
 }
 
+/* Status styling - make them look like pills (similar to buttons) */
 .status {
-  display: inline-block;
-  padding: 0.5rem 1rem; /* Match button padding */
-  border-radius: 20px; /* Match button border-radius */
-  font-size: 0.8rem; /* Consistent with table text */
-  color: white;
-  cursor: default; /* Indicate view-only */
-  text-align: center;
+  display: inline-block !important;
+  padding: 0.5rem 1rem !important;
+  border-radius: 20px !important;
+  font-size: 0.8rem !important;
+  text-align: center !important;
+  color: white !important;
+  min-width: 100px !important;   /* Ensures consistent width with buttons */
+  box-sizing: border-box !important;
 }
 
-/* Updated color scheme */
-.status.unseen { background-color: #000000; } /* Black */
-.status.pending { background-color: #ffff00; color: #000000; } /* Yellow with black text for readability */
-.status.in-progress { background-color: #0000ff; } /* Blue */
-.status.transferred-to-director { background-color: #800080; } /* Purple */
-.status.transferred-to-ngo { background-color: #ffa500; color: #000000; } /* Orange with black text for readability */
-.status.resolved { background-color: #00ff00; color: #000000; } /* Green with black text for readability */
 
+/* Status colors */
+.status.unseen { background-color: #000000 !important; }
+.status.pending { background-color: #ffff00 !important; color: #000000 !important; }
+.status.in-progress { background-color: #0000ff !important; }
+.status.transferred-to-director { background-color: #800080 !important; }
+.status.transferred-to-ngo { background-color: #ffa500 !important; color: #000000 !important; }
+.status.resolved { background-color: #00ff00 !important; color: #000000 !important; }
+
+
+/* Buttons */
 button {
   padding: 0.5rem 1rem;
   border: none;
@@ -160,12 +172,14 @@ button {
   border-radius: 20px;
   cursor: pointer;
   transition: 0.2s;
+  min-width: 100px;
 }
 
 button:hover {
   background: #6a312e;
 }
 
+/* Floating Button */
 .register-complaint-btn {
   position: fixed;
   bottom: 20px;
@@ -181,6 +195,7 @@ button:hover {
   transition: background-color 0.3s ease;
 }
 
+/* Form Section */
 .form-section {
   display: block;
 }
@@ -240,7 +255,7 @@ button:hover {
 }
 
 .submit-btn:hover {
-  background: #873F39;
+  background: #6a312e;
 }
 
 .close-btn {
@@ -259,6 +274,7 @@ button:hover {
   background: #777;
 }
 
+/* Fieldsets */
 fieldset {
   border: 1px solid #ddd;
   border-radius: 8px;

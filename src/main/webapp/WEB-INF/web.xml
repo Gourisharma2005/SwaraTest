@@ -51,6 +51,28 @@
     <url-pattern>/SubmitComplaintServlet</url-pattern>
   </servlet-mapping>
 
+
+  <!-- View Complaint Servlet -->
+  <servlet>
+    <servlet-name>ViewComplaintServlet</servlet-name>
+    <servlet-class>com.swara.ViewComplaintServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>ViewComplaintServlet</servlet-name>
+    <url-pattern>/ViewComplaintServlet</url-pattern>
+  </servlet-mapping>
+
+  <!-- Download Complaint PDF Servlet -->
+  <servlet>
+    <servlet-name>DownloadComplaintPDFServlet</servlet-name>
+    <servlet-class>com.swara.DownloadComplaintPDFServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>DownloadComplaintPDFServlet</servlet-name>
+    <url-pattern>/DownloadComplaintPDFServlet</url-pattern>
+  </servlet-mapping>
+
+
   <welcome-file-list>
     <welcome-file>index.html</welcome-file>
   </welcome-file-list>
