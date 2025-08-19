@@ -1,4 +1,4 @@
-package com.swara;
+package com.swara.servlet;
 
 import com.swara.dao.UserDAO;
 import com.swara.model.User;

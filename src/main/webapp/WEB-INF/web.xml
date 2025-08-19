@@ -7,7 +7,7 @@
 
 <servlet>
     <servlet-name>UserLoginServlet</servlet-name>
-    <servlet-class>com.swara.UserLoginServlet</servlet-class>
+    <servlet-class>com.swara.servlet.UserLoginServlet</servlet-class>
   </servlet>
 
   <servlet-mapping>
@@ -17,7 +17,7 @@
 
   <servlet>
     <servlet-name>AdminLogin</servlet-name>
-    <servlet-class>com.swara.AdminLoginServlet</servlet-class>
+    <servlet-class>com.swara.servlet.AdminLoginServlet</servlet-class>
   </servlet>
   <servlet-mapping>
     <servlet-name>AdminLogin</servlet-name>
@@ -26,7 +26,7 @@
 
   <servlet>
     <servlet-name>SubmitComplaint</servlet-name>
-    <servlet-class>com.swara.SubmitComplaintServlet</servlet-class>
+    <servlet-class>com.swara.servlet.SubmitComplaintServlet</servlet-class>
   </servlet>
   <servlet-mapping>
     <servlet-name>SubmitComplaint</servlet-name>
@@ -34,7 +34,7 @@
   </servlet-mapping>
   <servlet>
     <servlet-name>UserRegisterServlet</servlet-name>
-    <servlet-class>com.swara.UserRegisterServlet</servlet-class>
+    <servlet-class>com.swara.servlet.UserRegisterServlet</servlet-class>
   </servlet>
 
   <servlet-mapping>
@@ -44,7 +44,7 @@
 
   <servlet>
     <servlet-name>SubmitComplaintServlet</servlet-name>
-    <servlet-class>com.swara.SubmitComplaintServlet</servlet-class>
+    <servlet-class>com.swara.servlet.SubmitComplaintServlet</servlet-class>
   </servlet>
   <servlet-mapping>
     <servlet-name>SubmitComplaintServlet</servlet-name>
@@ -55,7 +55,7 @@
   <!-- View Complaint Servlet -->
   <servlet>
     <servlet-name>ViewComplaintServlet</servlet-name>
-    <servlet-class>com.swara.ViewComplaintServlet</servlet-class>
+    <servlet-class>com.swara.servlet.ViewComplaintServlet</servlet-class>
   </servlet>
   <servlet-mapping>
     <servlet-name>ViewComplaintServlet</servlet-name>
@@ -65,7 +65,7 @@
   <!-- Download Complaint PDF Servlet -->
   <servlet>
     <servlet-name>DownloadComplaintPDFServlet</servlet-name>
-    <servlet-class>com.swara.DownloadComplaintPDFServlet</servlet-class>
+    <servlet-class>com.swara.servlet.DownloadComplaintPDFServlet</servlet-class>
   </servlet>
   <servlet-mapping>
     <servlet-name>DownloadComplaintPDFServlet</servlet-name>

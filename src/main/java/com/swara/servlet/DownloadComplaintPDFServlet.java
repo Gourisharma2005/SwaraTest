@@ -1,4 +1,4 @@
-package com.swara;
+package com.swara.servlet;
 
 import com.swara.dao.ComplaintDAO;
 import com.swara.model.Complaint;
