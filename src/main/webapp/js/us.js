@@ -1,52 +1,102 @@
-// Function to toggle the department field visibility based on the selected role
+// script.js
+
 function toggleDepartmentField() {
   const role = document.getElementById('role').value;
-  const departmentField = document.getElementById('departmentField');
+  const deptField = document.getElementById('departmentField');
   if (role === 'HOD') {
-    departmentField.style.display = 'block';
+    deptField.style.display = 'block';
     document.getElementById('department').setAttribute('required', 'required');
   } else {
-    departmentField.style.display = 'none';
+    deptField.style.display = 'none';
     document.getElementById('department').removeAttribute('required');
   }
 }
 
-// Function to open the complaint form section
 function openForm() {
   document.getElementById('dashboardContent').style.display = 'none';
   document.getElementById('complaintFormSection').style.display = 'block';
+  document.getElementById('chatSection').style.display = 'none';
 }
 
-// Function to close the complaint form section
 function closeForm() {
   document.getElementById('complaintFormSection').style.display = 'none';
   document.getElementById('dashboardContent').style.display = 'block';
-  toggleDepartmentField(); // Reset department field visibility
 }
 
-// Function to display a placeholder alert for viewing a complaint
-function viewComplaint(complaintId) {
-  alert('View complaint with ID: ' + complaintId);
-}
-
-// Function to filter the complaint table based on search, status, and date
 function filterTable(search, status, date) {
-  const table = document.querySelector('.complaint-history table tbody');
-  const rows = table.getElementsByTagName('tr');
-  for (let i = 0; i < rows.length; i++) {
-    let match = true;
-    const cells = rows[i].getElementsByTagName('td');
-    if (search && cells[0].textContent.toLowerCase().indexOf(search.toLowerCase()) === -1 &&
-        cells[1].textContent.toLowerCase().indexOf(search.toLowerCase()) === -1) {
-      match = false;
-    }
-    if (status && cells[2].textContent !== status) {
-      match = false;
-    }
-    // Note: Date filtering assumes an incident_date column; adjust if not present
-    if (date && cells.length > 3 && cells[3].textContent !== date) {
-      match = false;
-    }
-    rows[i].style.display = match ? '' : 'none';
-  }
+  console.log('Filtering with:', search, status, date);
 }
+
+function openChat() {
+    // Hide other sections
+    document.getElementById("dashboardContent").style.display = "none";
+    document.getElementById("complaintFormSection").style.display = "none";
+
+    // Show Chat Section
+    document.getElementById("chatSection").style.display = "block";
+}
+
+function closeChat() {
+    // Hide chat and return to dashboard
+    document.getElementById("chatSection").style.display = "none";
+    document.getElementById("dashboardContent").style.display = "block";
+}
+
+
+
+function sendMessage() {
+    const input = document.getElementById("chatInput");
+    const chatBox = document.getElementById("chatBox");
+
+    if (input.value.trim() !== "") {
+        const msgWrapper = document.createElement("div");
+        msgWrapper.className = "chat-message right";
+
+        const msgContent = document.createElement("div");
+        msgContent.className = "message-content";
+        msgContent.innerHTML = `
+          <p>${input.value}</p>
+          <span class="chat-timestamp">${new Date().toLocaleString()}</span>
+        `;
+
+        msgWrapper.appendChild(msgContent);
+        chatBox.appendChild(msgWrapper);
+
+        input.value = "";
+
+        // Scroll to bottom automatically
+        chatBox.scrollTop = chatBox.scrollHeight;
+    }
+}
+
+
+document.getElementById("complaintForm").addEventListener("submit", function (e) {
+  e.preventDefault(); // Prevent default form submission
+
+  const formData = new FormData(this);
+
+  fetch("SubmitComplaintServlet", {
+    method: "POST",
+    body: formData
+  })
+    .then(response => response.json())
+    .then(data => {
+      if (data.status === "success") {
+        // ✅ Show success message
+        alert("Complaint submitted successfully!");
+
+        // ✅ Update Active Complaints count
+        document.querySelector(".stats .card:nth-child(1) h2").textContent = data.activeComplaints;
+
+        // ✅ Hide form, show dashboard
+        closeForm();
+      } else {
+        alert("Failed to submit complaint.");
+      }
+    })
+    .catch(err => {
+      console.error("Error submitting complaint:", err);
+      alert("Error occurred. Please try again.");
+    });
+});
+

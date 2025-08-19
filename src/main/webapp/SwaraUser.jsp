@@ -10,6 +10,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Swara User Dashboard</title>
   <link rel="stylesheet" href="css/SwaraUser.css" />
+
 </head>
 <body>
   <header>
@@ -26,7 +27,8 @@
         <li class="section-title">📥 My Complaints</li>
         <li class="section-title">📍 Track Status</li>
         <li class="section-title">📋 File a Case</li>
-        <li class="section-title">💬 Chat</li>
+        <li class="section-title" onclick="openChat()">💬 Chat</li>
+
         <div class="filters">
           <h3>🔎 Filter Complaints</h3>
           <input type="text" placeholder="Search..." onkeyup="filterTable(this.value)" />
@@ -58,6 +60,39 @@
       <%
         } else {
       %>
+
+
+
+   <!-- Chat Section (Initially Hidden) -->
+   <div id="chatSection" style="display:none;">
+       <div class="chat-section">
+           <h2>Anonymous Chat System <i class="fa fa-comments"></i></h2>
+           <div class="chat-box" id="chatBox">
+               <div class="chat-message left">
+                 <div class="message-content">
+                   <p>How the hell am I supposed to get a jury to believe you when I am not even sure that I do!?</p>
+                   <span class="chat-timestamp">2025-08-17 14:08</span>
+                 </div>
+               </div>
+
+               <div class="chat-message right">
+                 <div class="message-content">
+                   <p>When you're backed against the wall, break the god damn thing down.</p>
+                   <span class="chat-timestamp">2025-08-17 14:09</span>
+                 </div>
+               </div>
+           </div>
+
+           <div class="chat-input">
+               <input type="text" id="chatInput" placeholder="Type a reply or note...">
+               <button onclick="sendMessage()">Send</button>
+           </div>
+       </div>
+   </div>
+
+
+
+
           <!-- ✅ Dashboard Section -->
           <section class="dashboard" id="dashboardContent">
             <h1>Welcome to Your Safe Space 💖</h1>
@@ -94,6 +129,9 @@
                 <p>Escalated</p>
               </div>
             </section>
+
+
+
 
             <!-- Complaint History Table -->
             <section class="complaint-history">
@@ -219,32 +257,7 @@
   <button class="register-complaint-btn" onclick="openForm()">➕ Register Complaint</button>
 
   <!-- JS -->
-  <script>
-    function toggleDepartmentField() {
-      const role = document.getElementById('role').value;
-      const deptField = document.getElementById('departmentField');
-      if (role === 'HOD') {
-        deptField.style.display = 'block';
-        document.getElementById('department').setAttribute('required', 'required');
-      } else {
-        deptField.style.display = 'none';
-        document.getElementById('department').removeAttribute('required');
-      }
-    }
+  <script src="js/us.js"></script>
 
-    function openForm() {
-      document.getElementById('dashboardContent').style.display = 'none';
-      document.getElementById('complaintFormSection').style.display = 'block';
-    }
-
-    function closeForm() {
-      document.getElementById('complaintFormSection').style.display = 'none';
-      document.getElementById('dashboardContent').style.display = 'block';
-    }
-
-    function filterTable(search, status, date) {
-      console.log('Filtering with:', search, status, date);
-    }
-  </script>
 </body>
 </html>
