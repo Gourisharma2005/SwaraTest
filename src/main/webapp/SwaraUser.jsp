@@ -64,31 +64,18 @@
 
 
    <!-- Chat Section (Initially Hidden) -->
-   <div id="chatSection" style="display:none;">
-       <div class="chat-section">
-           <h2>Anonymous Chat System <i class="fa fa-comments"></i></h2>
-           <div class="chat-box" id="chatBox">
-               <div class="chat-message left">
-                 <div class="message-content">
-                   <p>How the hell am I supposed to get a jury to believe you when I am not even sure that I do!?</p>
-                   <span class="chat-timestamp">2025-08-17 14:08</span>
-                 </div>
-               </div>
-
-               <div class="chat-message right">
-                 <div class="message-content">
-                   <p>When you're backed against the wall, break the god damn thing down.</p>
-                   <span class="chat-timestamp">2025-08-17 14:09</span>
-                 </div>
-               </div>
-           </div>
-
-           <div class="chat-input">
-               <input type="text" id="chatInput" placeholder="Type a reply or note...">
-               <button onclick="sendMessage()">Send</button>
-           </div>
-       </div>
-   </div>
+<div id="chatSection" style="display:none;">
+    <div class="chat-section">
+        <h2>Anonymous Chat System <i class="fa fa-comments"></i></h2>
+        <div class="chat-box" id="chatBox">
+            <!-- Messages will be appended here dynamically -->
+        </div>
+        <div class="chat-input">
+            <input type="text" id="chatInput" placeholder="Type a reply or note...">
+            <button onclick="sendMessage()">Send</button>
+        </div>
+    </div>
+</div>
 
 
 
@@ -258,6 +245,13 @@
 
   <!-- JS -->
   <script src="js/us.js"></script>
+  <script src="js/chat.js"></script>
+  <script>
+      // Assuming anonymous ID is the identifier
+      const userId = "<%= session.getAttribute("anonymous_id") != null ? session.getAttribute("anonymous_id") : "Guest" %>";
+      initChat(userId);
+  </script>
+
 
 </body>
 </html>

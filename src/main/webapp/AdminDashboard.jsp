@@ -195,11 +195,9 @@
                 </div>
             </div>
             <div class="chat-section">
-                <h2>Anonymous Chat System</h2>
+                <h2>Anonymous Chat System <i class="fa fa-comments"></i></h2>
                 <div class="chat-box" id="chatBox">
-                    <p><strong>admin:</strong> Complaint received and marked as pending. <%= new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm").format(new java.util.Date()) %></p>
-                    <p><strong>Anonymous ID #A1023:</strong> I feel unsafe due to repeated harassment in the hostel. <%= new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm").format(new java.util.Date()) %></p>
-                    <p><strong>Anonymous ID #A1045:</strong> Can I know the status of my complaint filed last week? <%= new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm").format(new java.util.Date()) %></p>
+                    <!-- Messages will be appended here dynamically -->
                 </div>
                 <div class="chat-input">
                     <input type="text" id="chatInput" placeholder="Type a reply or note...">
@@ -209,5 +207,11 @@
         </main>
     </div>
     <script src="js/AdminDashboard.js"></script>
+    <script src="js/chat.js"></script>
+    <script>
+        const adminName = "<%= session.getAttribute("role") != null ? session.getAttribute("role") : "Admin" %>";
+        initChat(adminName);
+    </script>
+
 </body>
 </html>

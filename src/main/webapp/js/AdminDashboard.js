@@ -33,20 +33,22 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     // Filter complaints by status and department
-    function filterComplaints() {
-        const statusValue = statusFilter.value;
-        const deptValue = deptFilter.value;
-        const rows = tableBody.getElementsByTagName('tr');
-
-        for (let row of rows) {
-            const cells = row.getElementsByTagName('td');
-            const status = cells[4].getElementsByTagName('span')[0].className.split(' ')[1].replace('-', ' ');
-            const department = cells[3].textContent.toLowerCase();
-            const matchStatus = !statusValue || status === statusValue;
-            const matchDept = !deptValue || department === deptValue.toLowerCase();
-            row.style.display = matchStatus && matchDept ? '' : 'none';
-        }
-    }
+   function filterComplaints() {
+       const statusFilter = document.getElementById("statusFilter").value;
+       const deptFilter = document.getElementById("deptFilter").value;
+       const tableBody = document.getElementById("complaintTableBody");
+       if (!tableBody) return; // Exit if table body is not found
+       const rows = tableBody.getElementsByTagName("tr");
+       for (let row of rows) {
+           if (row) {
+               const status = row.cells[4] ? row.cells[4].textContent : "";
+               const dept = row.cells[3] ? row.cells[3].textContent : "";
+               const matchStatus = !statusFilter || status === statusFilter;
+               const matchDept = !deptFilter || dept === deptFilter;
+               row.style.display = matchStatus && matchDept ? "" : "none";
+           }
+       }
+   }
 
     // Modal popup logic for viewing complaint details
     function openModal(id, title, description, status) {
